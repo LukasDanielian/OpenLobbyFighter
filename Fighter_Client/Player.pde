@@ -1,18 +1,26 @@
 class Player
 {
-  int ID, kills;
-  float yaw, pitch, speed, health;
+  int ID, ammo, magSize, cooldown;
+  float yaw, pitch, speed, zoom, health;
   PVector pos, lastPos, view, vel;
-  boolean jumping;
+  boolean jumping, moving, shooting, reloading;
+  PShape gun;
 
   public Player()
   {
     pos = new PVector(0, 0, 0);
     vel = new PVector(0, 0, 0);
     yaw = HALF_PI;
-    speed = .05;
+    speed = .075;
     ID = -1;
+    zoom = 2.5;
     health = 100;
+    gun = loadShape("gun.obj");
+    gun.scale(2);
+    gun.rotateX(PI);
+    gun.translate(1, 12, 0);
+    magSize = 30;
+    ammo = magSize;
   }
 
   //Moves players position and view
@@ -24,9 +32,36 @@ class Player
     applyPhysics();
     weapon();
 
+    //Camera
     view = new PVector(cos(yaw) * cos(pitch), -sin(pitch), sin(yaw) * cos(pitch)).mult(-width * .1);
-    perspective(PI/2.5, float(width)/height, .01, width * width);
+    perspective(PI/zoom, float(width)/height, .01, width * width);
     camera(pos.x, pos.y, pos.z, pos.x + view.x, pos.y + view.y, pos.z + view.z, 0, 1, 0);
+
+    //Gun model
+    push();
+    translate(pos.x, pos.y, pos.z);
+    rotateY(-yaw + HALF_PI);
+    rotateX(pitch);
+
+    PVector gunPos = new PVector(0, 0, 0);
+    gunPos.x = map(zoom, 2.5, 5, 5, -.2);
+    gunPos.y = map(zoom, 2.5, 5, 5, 3.5);
+    gunPos.z = map(zoom, 2.5, 5, -5, 5);
+
+    if (mouseButton != RIGHT)
+    {
+      if (shooting && ammo != 0)
+        gunPos.z += sin(frameCount)/2;
+      else if (moving)
+      {
+        gunPos.x += sin(frameCount * .1)/2;
+        gunPos.y -= abs(sin(frameCount * .1))/2;
+      }
+    }
+
+    translate(gunPos.x, gunPos.y, gunPos.z);
+    shape(gun);
+    pop();
   }
 
   //On screen info
@@ -40,8 +75,15 @@ class Player
     //FPS
     fill(0);
     textSize(15);
-    text("Frame Rate: " + (int)frameRate, width/2, height * .05);
+    text("Frame Rate: " + (int)frameRate, width * .025, height * .01);
     textAlign(CENTER);
+
+    //Name
+    textSize(25);
+    text("Player Number: " + ID, width/2, height * .05);
+
+    //Ammo Info
+    text(ammo + "/" + magSize, width/2, height * .85);
 
     //Cross hair
     noStroke();
@@ -62,7 +104,22 @@ class Player
     stroke(0);
     strokeWeight(2);
     rect(width/2, height * .95, 200, 30);
+
+    //Reloading
+    if (reloading)
+    {
+      noStroke();
+      fill(0,255,0);
+      circle(width/2, height * .85, width/12.5);
+      fill(255, 0, 0);
+      arc(width/2, height * .85, width/12.5, width/12.5, -HALF_PI, map(cooldown, 0, 60, -HALF_PI, PI+HALF_PI), PIE);
+    }
     
+    //Leaderboard
+    textAlign(CENTER,TOP);
+    fill(0);
+    text(leaders, width * .9, height * .01);
+
     hint(ENABLE_DEPTH_TEST);
     pop();
   }
@@ -105,50 +162,100 @@ class Player
       {
         pos.x += view.x * speed;
         pos.z += view.z * speed;
+        moving = true;
       }
       if (keyDown('S'))
       {
         pos.x -= view.x * speed;
         pos.z -= view.z * speed;
+        moving = true;
       }
       if (keyDown('A'))
       {
         pos.x -= cos(yaw - PI/2) * cos(pitch) * 10;
         pos.z -= sin(yaw - PI/2) * cos(pitch) * 10;
+        moving = true;
       }
       if (keyDown('D'))
       {
         pos.x += cos(yaw - PI/2) * cos(pitch) * 10;
         pos.z += sin(yaw - PI/2) * cos(pitch) * 10;
+        moving = true;
       }
 
       //Actions
+      if (keyDown('R'))
+      {
+        if(ammo < magSize && !reloading)
+        {
+          shooting = false;
+          ammo = magSize;
+          reloading = true;
+        }
+      }
       if (keyDown(' '))
       {
         if (!jumping)
         {
           jumping = true;
           vel.y = -15;
+          moving = true;
         }
       }
-    }
+    } else
+      moving = false;
   }
 
   //Manages shooting
   void weapon()
   {
-    if (mousePressed && mouseButton == LEFT)
+    //Reload cooldown
+    if (reloading)
     {
-      for (int k : enemys.keySet())
-      {
-        Enemy enemy = enemys.get(k);
+      cooldown++;
 
-        if (!enemy.dead && calculateCollision(new PVector(pos.x, pos.y, pos.z), view, new PVector(enemy.pos.x, enemy.pos.y, enemy.pos.z), 25))
-        {
-          packet += "HIT|" + ID + "|" + enemy.ID + "$";
-        }
+      if (cooldown > 60)
+      {
+        reloading = false;
+        cooldown = 0;
       }
     }
+
+    //Fire logic
+    if (mousePressed)
+    {
+      //Fire
+      if (!reloading && frameCount % 6 == 0 && ammo > 0 && mouseButton == LEFT)
+      {
+        shooting = true;
+        player.pitch -= .01;
+        player.yaw += random(-.001,.001);
+        ammo--;
+
+        for (int k : enemys.keySet())
+        {
+          Enemy enemy = enemys.get(k);
+
+          if (!enemy.dead && calculateCollision(new PVector(pos.x, pos.y, pos.z), view, new PVector(enemy.pos.x, enemy.pos.y, enemy.pos.z), 25))
+            client.write("HIT|" + enemy.ID + "\n");
+        }
+      }
+
+      //Zoom in
+      if (mouseButton == RIGHT)
+      {
+        if (zoom < 5)
+        {
+          zoom += .25;
+        }
+      }
+    } else if (zoom > 2.5)
+    {
+      zoom -= .25;
+    }
+    
+    else
+      shooting = false;
   }
 
   //Calculates the Ray sphere collision
@@ -192,17 +299,5 @@ class Player
       }
     } else if (pos.y < 0)
       pos.y = 0;
-  }
-
-  //Taking damage from other player
-  void applyDamage(int enemyID)
-  {
-    health -= 5;
-
-    if (health <= 0)
-    {
-      packet += "DEAD|" + ID + "|" +enemyID + "$";
-      state = "Respawning";
-    }
   }
 }

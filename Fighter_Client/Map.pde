@@ -1,10 +1,27 @@
 class Map
 {
   float size;
+  ArrayList<Object> objects;
 
   Map()
   {
     size = 10000;
+    objects = new ArrayList<Object>();
+    
+    for(int i = 0; i < 1000; i++)
+      objects.add(new Grass());
+    
+    for(float i = 0; i < TWO_PI; i += HALF_PI)
+      objects.add(new Tree(new PVector(sin(i) * size/4, 75, cos(i) * size/4)));
+      
+    for(float x = -size/2; x <= size/2; x += 200)
+      objects.add(new Fence(new PVector(x,75,-size/2),0));
+    for(float x = -size/2; x <= size/2; x += 200)
+      objects.add(new Fence(new PVector(x,75,size/2),0));
+    for(float z = -size/2; z <= size/2; z += 200)
+      objects.add(new Fence(new PVector(-size/2,75,z),HALF_PI));
+    for(float z = -size/2; z <= size/2; z += 200)
+      objects.add(new Fence(new PVector(size/2,75,z),HALF_PI));
   }
 
   //Renders map
@@ -29,23 +46,9 @@ class Map
     lights();
     pop();
 
-    //Obstacles
-    fill(0);
-    colorMode(HSB);
-    stroke(frameCount % 255, 255,255);
-    colorMode(RGB);
-    for (float i = 0; i < TWO_PI; i+= HALF_PI)
-    {
-      PVector pos = new PVector(sin(i) * size/4, 75, cos(i) * size/4);
-      
-      push();
-      translate(pos.x, pos.y, pos.z);
-      sphere(size/8);
-      pop();
-      
-      if (dist(player.pos.x, player.pos.y, player.pos.z, pos.x, pos.y, pos.z) < (size/8) + 25)
-        player.pos = PVector.add(pos, player.pos.sub(pos).copy().normalize().mult((size/8) + 25));
-    }
+    //Objects
+    for(int i = 0; i < objects.size(); i++)
+      objects.get(i).render();
     
     //Enemys
     for(int k: enemys.keySet())

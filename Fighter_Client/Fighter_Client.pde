@@ -10,31 +10,21 @@ Player player;
 Map map;
 Client client;
 HashMap<Integer,Enemy> enemys;
-String state, packet;
+String state,leaders;
 
 void setup()
 {
-  //fullScreen(P3D);
-  size(1000,500,P3D);
+  fullScreen(P3D);
   shapeMode(CENTER);
   rectMode(CENTER);
   textAlign(CENTER, CENTER);
   imageMode(CENTER);
+  hint(ENABLE_STROKE_PERSPECTIVE);
   frameRate(60);
-  textSize(128);
-
-  r=(GLWindow)surface.getNative();
-  keys = new boolean[256];
-  oldMouse = new PVector(mouseX, mouseY);
-  lockMouse();
-  player = new Player();
-  map = new Map();
-  enemys = new HashMap<Integer, Enemy>();
-  client = new Client(this, "192.168.1.183", 1234);
-  state = "Loading";
-  getID();
+  textSize(128);  
   
-  thread("manageData");
+  state = "Loading";
+  thread("loadEverything");
 }
 
 void draw()
@@ -65,13 +55,12 @@ void draw()
 
   //Respawn
   else if (state.equals("Respawning"))
-  {
+  {    
     push();
     camera();
     ortho();
     noLights();
     hint(DISABLE_DEPTH_TEST);
-    
     background(0);
     textSize(100);
     fill(255);
@@ -79,4 +68,20 @@ void draw()
     hint(ENABLE_DEPTH_TEST);
     pop();
   }
+}
+
+void loadEverything()
+{
+  r=(GLWindow)surface.getNative();
+  keys = new boolean[256];
+  oldMouse = new PVector(mouseX, mouseY);
+  lockMouse();
+  player = new Player();
+  map = new Map();
+  enemys = new HashMap<Integer, Enemy>();
+  client = new Client(this, "192.168.1.183", 1234);
+  getID();
+  leaders = "";
+  state = "Playing";
+  thread("manageData");
 }

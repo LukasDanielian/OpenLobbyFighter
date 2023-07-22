@@ -1,0 +1,4 @@
+interface Object
+{
+  void render();
+}
