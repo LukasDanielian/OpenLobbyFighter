@@ -4,7 +4,7 @@ class Enemy
   PVector pos;
   float yaw, health;
   boolean dead;
-  PShape gun;
+  PShape gun, eye;
 
   Enemy(int ID, PVector pos, float yaw, float health, boolean dead)
   {
@@ -17,6 +17,12 @@ class Enemy
     gun.scale(4);
     gun.rotateX(PI);
     gun.translate(1, 12, 0);
+    
+    eye = createShape(SPHERE,25);
+    eye.setTexture(loadImage("eye.jpg"));
+    eye.rotateY(-HALF_PI);
+    eye.translate(25,25,0);
+    eye.setStroke(false);
   }
 
   //Renders enemys
@@ -31,7 +37,7 @@ class Enemy
       stroke(0);
       strokeWeight(1);
       fill(255, 0, 0);
-      sphere(25);
+      shape(eye);
       translate(0, 50, 0);
       box(30, 50, 30);
 

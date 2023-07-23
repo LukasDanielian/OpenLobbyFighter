@@ -8,7 +8,8 @@ class Player
 
   public Player()
   {
-    pos = new PVector(0, 0, 0);
+    PVector[] spawnLocs = {new PVector(-4500, 0, 0), new PVector(4500, 0, 0), new PVector(0, 0, -4500), new PVector(0, 0, 4500), new PVector(-4500, 0, -4500), new PVector(4500, 0, 4500), new PVector(4500, 0, -4500), new PVector(-4500, 0, 4500)};
+    pos = spawnLocs[(int)random(0,spawnLocs.length)];
     vel = new PVector(0, 0, 0);
     yaw = HALF_PI;
     speed = .075;
@@ -52,8 +53,11 @@ class Player
     //Moving and shooting animation
     if (mouseButton != RIGHT)
     {
+      //Shooting animation
       if (shooting && ammo != 0)
         gunPos.z += sin(frameCount)/2;
+        
+      //Moving animation
       else if (moving)
       {
         gunPos.x += sin(frameCount * .1)/2;
@@ -76,7 +80,7 @@ class Player
     noLights();
     hint(DISABLE_DEPTH_TEST);
     //FPS
-    fill(0);
+    fill(255);
     textSize(15);
     text("Frame Rate: " + (int)frameRate, width * .025, height * .01);
     textAlign(CENTER);
@@ -86,6 +90,7 @@ class Player
     text("Player Number: " + ID, width/2, height * .05);
 
     //Ammo Info
+    textSize(50);
     text(ammo + "/" + magSize, width/2, height * .85);
 
     //Cross hair
@@ -120,7 +125,8 @@ class Player
     
     //Leaderboard
     textAlign(CENTER,TOP);
-    fill(0);
+    fill(255);
+    textSize(25);
     text(leaders, width * .9, height * .01);
 
     hint(ENABLE_DEPTH_TEST);
@@ -205,7 +211,10 @@ class Player
           moving = true;
         }
       }
-    } else
+    } 
+    
+    //no movement
+    else
       moving = false;
   }
 

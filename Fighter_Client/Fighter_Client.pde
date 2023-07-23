@@ -46,9 +46,9 @@ void draw()
   //Playing
   else if (state.equals("Playing"))
   {
-    background(#16819D);
+    background(#050508);
     lights();
-    directionalLight(196, 123, 76, .75, 1, .75);
+    directionalLight(157, 119, 35, .75, 1, .75);
 
     player.render();
     map.render();

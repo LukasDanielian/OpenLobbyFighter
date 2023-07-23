@@ -8,6 +8,9 @@ class Map
     size = 10000;
     objects = new ArrayList<Object>();
     
+    for(int i = 0; i < 500; i++)
+      objects.add(new Star());
+      
     for(int i = 0; i < 1000; i++)
       objects.add(new Grass());
     
@@ -22,6 +25,8 @@ class Map
       objects.add(new Fence(new PVector(-size/2,75,z),HALF_PI));
     for(float z = -size/2; z <= size/2; z += 200)
       objects.add(new Fence(new PVector(size/2,75,z),HALF_PI));
+      
+    objects.add(new House());
   }
 
   //Renders map
@@ -33,17 +38,6 @@ class Map
     noStroke();
     fill(0, 255, 0);
     box(size, 1, size);
-    pop();
-
-    //Sun
-    push();
-    translate(player.pos.x - width, -width * 2, player.pos.z - width);
-    noLights();
-    noStroke();
-    fill(#FFEA00);
-    rotateX(HALF_PI);
-    circle(0, 0, width/4);
-    lights();
     pop();
 
     //Objects

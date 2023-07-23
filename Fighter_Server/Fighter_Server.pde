@@ -6,7 +6,7 @@ HashMap<Integer, Player> players;
 HashMap<Client, Integer> clients;
 HashMap<Integer,Thread> threads;
 int id;
-PVector[] spawnLocs = {new PVector(0, 0, 0), new PVector(-4500, 0, 0), new PVector(4500, 0, 0), new PVector(0, 0, -4500), new PVector(0, 0, 4500), new PVector(-4500, 0, -4500), new PVector(4500, 0, 4500), new PVector(4500, 0, -4500), new PVector(-4500, 0, 4500)};
+PVector[] spawnLocs = {new PVector(-4500, 0, 0), new PVector(4500, 0, 0), new PVector(0, 0, -4500), new PVector(0, 0, 4500), new PVector(-4500, 0, -4500), new PVector(4500, 0, 4500), new PVector(4500, 0, -4500), new PVector(-4500, 0, 4500)};
 
 void setup()
 {
