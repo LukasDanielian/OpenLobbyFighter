@@ -14,8 +14,7 @@ String state,leaders;
 
 void setup()
 {
-  //fullScreen(P3D);
-  size(1000,500,P3D);
+  fullScreen(P3D);
   shapeMode(CENTER);
   rectMode(CENTER);
   textAlign(CENTER, CENTER);
@@ -40,6 +39,8 @@ void draw()
     fill(255);
     for(float i = 0; i < TWO_PI; i+= QUARTER_PI)
       circle(width/2 + sin(i - frameCount * .1) * 50, height * .75 + cos(i - frameCount * .05) * 50, 10);
+      
+    return;
   }
 
   //Playing
@@ -69,6 +70,8 @@ void draw()
     hint(ENABLE_DEPTH_TEST);
     pop();
   }
+  
+  client.write("POSITION|" + player.pos.x + "|" + player.pos.y + "|" + player.pos.z + "|" + player.yaw + "\n");
 }
 
 void loadEverything()

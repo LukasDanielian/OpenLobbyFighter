@@ -35,7 +35,7 @@ void draw()
     server.write("PLAYERS|" + toSend.substring(0, toSend.length()-1) + "\n");
   }
   
-  //sendLeaderBoard();
+  sendLeaderBoard();
 }
 
 //New client joins server
