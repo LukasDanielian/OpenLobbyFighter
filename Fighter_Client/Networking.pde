@@ -45,11 +45,15 @@ void manageData()
             {
               Enemy enemy = enemys.get(int(pos[0]));
 
+              //Create new enemy
               if (enemy == null)
               {
                 enemy = new Enemy(int(pos[0]), new PVector(float(pos[1]), float(pos[2]), float(pos[3])), float(pos[4]), float(pos[5]), boolean(pos[6]));
                 enemys.put(int(pos[0]), enemy);
-              } else
+              } 
+              
+              //Update enemy
+              else
               {
                 enemy.pos = new PVector(float(pos[1]), float(pos[2]), float(pos[3]));
                 enemy.yaw = float(pos[4]);
@@ -63,6 +67,7 @@ void manageData()
             {
               player.health = float(pos[5]);
 
+              //Died
               if (boolean(pos[6]))
                 state = "Respawning";
             }
@@ -73,10 +78,9 @@ void manageData()
         else if (data[0].equals("RANKINGS"))
         {
           leaders = "";
+          
           for (int i = 1; i < data.length; i++)
-          {
             leaders += data[i] + "\n";
-          }
         }
 
         //player spawns back in

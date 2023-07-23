@@ -43,11 +43,13 @@ class Player
     rotateY(-yaw + HALF_PI);
     rotateX(pitch);
 
+    //Scoping animation
     PVector gunPos = new PVector(0, 0, 0);
     gunPos.x = map(zoom, 2.5, 5, 5, -.2);
     gunPos.y = map(zoom, 2.5, 5, 5, 3.5);
     gunPos.z = map(zoom, 2.5, 5, -5, 5);
-
+  
+    //Moving and shooting animation
     if (mouseButton != RIGHT)
     {
       if (shooting && ammo != 0)
@@ -59,6 +61,7 @@ class Player
       }
     }
 
+    //Render gun
     translate(gunPos.x, gunPos.y, gunPos.z);
     shape(gun);
     pop();

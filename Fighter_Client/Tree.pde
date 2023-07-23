@@ -19,6 +19,7 @@ class Tree implements Object
     shape(tree);
     pop();
     
+    //Collision
     if (dist(player.pos.x, player.pos.y, player.pos.z, pos.x, pos.y, pos.z) < 300)
         player.pos = PVector.add(pos, player.pos.sub(pos).copy().normalize().mult(300));
   }

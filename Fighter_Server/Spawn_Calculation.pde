@@ -25,6 +25,7 @@ PVector getBestSpawn()
     
     average /= alivePlayers;
     
+    //Compare averages
     if(average > largest)
     {
       largest = average;

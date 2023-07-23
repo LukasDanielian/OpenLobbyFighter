@@ -1,5 +1,7 @@
+//Sends the leader board every frame
 void sendLeaderBoard()
 {
+  //Sorts all players in order of number of kills
   PriorityQueue<Player> leaders = new PriorityQueue<>();
   
   for(int k: players.keySet())
@@ -9,6 +11,7 @@ void sendLeaderBoard()
   
   String toRet = "Player Num:    Kills:|";;
   
+  //Sort through all players
   while(!leaders.isEmpty())
   {
     Player player = leaders.remove();

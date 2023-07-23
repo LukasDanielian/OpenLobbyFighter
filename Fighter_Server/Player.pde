@@ -16,10 +16,12 @@ class Player implements Runnable, Comparable<Player>
     health = 100;
   }
 
+  //Runs forever on a new thread constantly talking with individual client about actions
   void run()
   {
     while (true)
     {
+      //Grab line from client
       if (client.available() > 0)
       {
         String message = client.readString();
@@ -57,6 +59,7 @@ class Player implements Runnable, Comparable<Player>
   {
     health -= 5;
 
+    //dead
     if (health <= 0)
     {
       dead = true;
@@ -66,6 +69,7 @@ class Player implements Runnable, Comparable<Player>
     return false;
   }
 
+  //Returns info about player, also runs cooldown for respawn
   String getInfo()
   {
     if (dead)
@@ -85,6 +89,7 @@ class Player implements Runnable, Comparable<Player>
     return ID + "*" + pos.x + "*" + pos.y + "*" + pos.z + "*" + yaw + "*" + health + "*" + dead;
   }
   
+  //Compares players by kill amount
   int compareTo(Player player)
   {
     return player.kills - kills;
