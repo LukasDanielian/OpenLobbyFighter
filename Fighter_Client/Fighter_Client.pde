@@ -14,8 +14,7 @@ String state,leaders;
 
 void setup()
 {
-  //fullScreen(P3D);
-  size(1000,500,P3D);
+  fullScreen(P3D);
   shapeMode(CENTER);
   rectMode(CENTER);
   textAlign(CENTER, CENTER);
