@@ -84,7 +84,8 @@ class Gun
           {
             Enemy enemy = enemys.get(k);
 
-            if (!enemy.dead && calculateCollision(new PVector(player.pos.x, player.pos.y, player.pos.z), player.view, new PVector(enemy.pos.x, enemy.pos.y, enemy.pos.z), 25))
+            //Head and body shot
+            if (!enemy.dead && (calculateCollision(new PVector(player.pos.x, player.pos.y, player.pos.z), player.view, new PVector(enemy.pos.x, enemy.pos.y, enemy.pos.z), 25) || calculateCollision(new PVector(player.pos.x, player.pos.y, player.pos.z), player.view, new PVector(enemy.pos.x, enemy.pos.y + 50, enemy.pos.z), 25)))
               client.write("HIT|" + enemy.ID + "\n");
           }
         }

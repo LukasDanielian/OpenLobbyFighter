@@ -10,8 +10,8 @@ class Player
   {
     PVector[] spawnLocs = {new PVector(-4500, 0, 0), new PVector(4500, 0, 0), new PVector(0, 0, -4500), new PVector(0, 0, 4500), new PVector(-4500, 0, -4500), new PVector(4500, 0, 4500), new PVector(4500, 0, -4500), new PVector(-4500, 0, 4500)};
     pos = spawnLocs[(int)random(0,spawnLocs.length)];
+    yaw = atan2(-pos.x,pos.z) + HALF_PI;
     vel = new PVector(0, 0, 0);
-    yaw = HALF_PI;
     speed = .075;
     ID = -1;
     health = 100;   
