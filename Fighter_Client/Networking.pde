@@ -92,6 +92,7 @@ void manageData()
           state = "Playing";
           player.pos.x = float(data[1]);
           player.pos.z = float(data[2]);
+          player.yaw = atan2(-player.pos.x,player.pos.z) + HALF_PI;
         }
 
         //Player leaves game
