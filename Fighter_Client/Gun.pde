@@ -15,7 +15,7 @@ class Gun
     ammo = magSize;
     zoom = 2.5;
   }
-  
+
   //Display gun
   void render()
   {
@@ -50,7 +50,7 @@ class Gun
     shape(gun);
     pop();
   }
-  
+
   //Updates info about gun
   void updateInfo()
   {
@@ -74,16 +74,19 @@ class Gun
       {
         shooting = true;
         player.pitch -= .01;
-        player.yaw += random(-.001,.001);
+        player.yaw += random(-.001, .001);
         ammo--;
-  
-        //Check if hit any enemy
-        for (int k : enemys.keySet())
-        {
-          Enemy enemy = enemys.get(k);
 
-          if (!enemy.dead && calculateCollision(new PVector(player.pos.x, player.pos.y, player.pos.z), player.view, new PVector(enemy.pos.x, enemy.pos.y, enemy.pos.z), 25))
-            client.write("HIT|" + enemy.ID + "\n");
+        synchronized(enemys)
+        {
+          //Check if hit any enemy
+          for (int k : enemys.keySet())
+          {
+            Enemy enemy = enemys.get(k);
+
+            if (!enemy.dead && calculateCollision(new PVector(player.pos.x, player.pos.y, player.pos.z), player.view, new PVector(enemy.pos.x, enemy.pos.y, enemy.pos.z), 25))
+              client.write("HIT|" + enemy.ID + "\n");
+          }
         }
       }
 
@@ -95,11 +98,11 @@ class Gun
           zoom += .25;
       }
     }
-    
+
     //Unscope
     else if (zoom > 2.5)
       zoom -= .25;
-    
+
     //Not firing
     else
       shooting = false;
@@ -114,7 +117,7 @@ class Gun
       reloading = true;
     }
   }
-  
+
   //Calculates the Ray sphere collision
   boolean calculateCollision(PVector rayOrigin, PVector rayDirection, PVector sphereCenter, float sphereRadius)
   {
