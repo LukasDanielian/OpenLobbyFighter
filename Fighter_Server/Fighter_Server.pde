@@ -12,12 +12,14 @@ void setup()
   size(150, 150);
   frameRate(60);
   background(0);
+  textSize(25);
   textAlign(CENTER, CENTER);
-  text("SERVER", width/2, height/2);
 
   server = new Server(this, 1234);
   players = new HashMap<Integer, Player>();
   clients = new HashMap<Client, Integer>();
+  
+  text(server.ip(), width/2, height/2);
 }
 
 //Sends all info about every player to everyone 60 times per second 
