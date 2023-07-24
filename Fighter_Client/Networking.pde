@@ -43,22 +43,25 @@ void manageData()
             //Other player info
             if (int(pos[0]) != player.ID)
             {
-              Enemy enemy = enemys.get(int(pos[0]));
+              synchronized(enemys)
+              {
+                Enemy enemy = enemys.get(int(pos[0]));
 
-              //Create new enemy
-              if (enemy == null)
-              {
-                enemy = new Enemy(int(pos[0]), new PVector(float(pos[1]), float(pos[2]), float(pos[3])), float(pos[4]), float(pos[5]), boolean(pos[6]));
-                enemys.put(int(pos[0]), enemy);
-              } 
-              
-              //Update enemy
-              else
-              {
-                enemy.pos = new PVector(float(pos[1]), float(pos[2]), float(pos[3]));
-                enemy.yaw = float(pos[4]);
-                enemy.health = float(pos[5]);
-                enemy.dead = boolean(pos[6]);
+                //Create new enemy
+                if (enemy == null)
+                {
+                  enemy = new Enemy(int(pos[0]), new PVector(float(pos[1]), float(pos[2]), float(pos[3])), float(pos[4]), float(pos[5]), boolean(pos[6]));
+                  enemys.put(int(pos[0]), enemy);
+                }
+
+                //Update enemy
+                else
+                {
+                  enemy.pos = new PVector(float(pos[1]), float(pos[2]), float(pos[3]));
+                  enemy.yaw = float(pos[4]);
+                  enemy.health = float(pos[5]);
+                  enemy.dead = boolean(pos[6]);
+                }
               }
             }
 
@@ -78,7 +81,7 @@ void manageData()
         else if (data[0].equals("RANKINGS"))
         {
           leaders = "";
-          
+
           for (int i = 1; i < data.length; i++)
             leaders += data[i] + "\n";
         }
@@ -94,7 +97,10 @@ void manageData()
         //Player leaves game
         else if (data[0].equals("LEFT"))
         {
-          enemys.remove(int(data[1]));
+          synchronized(enemys)
+          {
+            enemys.remove(int(data[1]));
+          }
         }
       }
     }

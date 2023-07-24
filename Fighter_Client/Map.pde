@@ -45,7 +45,10 @@ class Map
       objects.get(i).render();
     
     //Enemys
-    for(int k: enemys.keySet())
-      enemys.get(k).render();
+    synchronized(enemys)
+    {
+      for(int k: enemys.keySet())
+        enemys.get(k).render();
+    }
   }
 }
