@@ -1,10 +1,10 @@
 class Player
 {
-  int ID, ammo, magSize, cooldown;
-  float yaw, pitch, speed, zoom, health;
+  int ID;
+  float yaw, pitch, speed, health;
   PVector pos, lastPos, view, vel;
-  boolean jumping, moving, shooting, reloading;
-  PShape gun;
+  boolean jumping, moving;
+  Gun gun;
 
   public Player()
   {
@@ -14,14 +14,8 @@ class Player
     yaw = HALF_PI;
     speed = .075;
     ID = -1;
-    zoom = 2.5;
-    health = 100;
-    gun = loadShape("gun.obj");
-    gun.scale(2);
-    gun.rotateX(PI);
-    gun.translate(1, 12, 0);
-    magSize = 30;
-    ammo = magSize;
+    health = 100;   
+    gun = new Gun();
   }
 
   //Moves players position and view
@@ -31,44 +25,17 @@ class Player
     buttons();
     checkBounds();
     applyPhysics();
-    weapon();
-
-    //Camera
-    view = new PVector(cos(yaw) * cos(pitch), -sin(pitch), sin(yaw) * cos(pitch)).mult(-width * .1);
-    perspective(PI/zoom, float(width)/height, .01, width * width);
-    camera(pos.x, pos.y, pos.z, pos.x + view.x, pos.y + view.y, pos.z + view.z, 0, 1, 0);
-
-    //Gun model
-    push();
-    translate(pos.x, pos.y, pos.z);
-    rotateY(-yaw + HALF_PI);
-    rotateX(pitch);
-
-    //Scoping animation
-    PVector gunPos = new PVector(0, 0, 0);
-    gunPos.x = map(zoom, 2.5, 5, 5, -.2);
-    gunPos.y = map(zoom, 2.5, 5, 5, 3.5);
-    gunPos.z = map(zoom, 2.5, 5, -5, 5);
+    gun.updateInfo();
+    updateCamera();
+    gun.render();
+  }
   
-    //Moving and shooting animation
-    if (mouseButton != RIGHT)
-    {
-      //Shooting animation
-      if (shooting && ammo != 0)
-        gunPos.z += sin(frameCount)/2;
-        
-      //Moving animation
-      else if (moving)
-      {
-        gunPos.x += sin(frameCount * .1)/2;
-        gunPos.y -= abs(sin(frameCount * .1))/2;
-      }
-    }
-
-    //Render gun
-    translate(gunPos.x, gunPos.y, gunPos.z);
-    shape(gun);
-    pop();
+  //updates player view
+  void updateCamera()
+  {
+    view = new PVector(cos(yaw) * cos(pitch), -sin(pitch), sin(yaw) * cos(pitch)).mult(-width * .1);
+    perspective(PI/gun.zoom, float(width)/height, .01, width * width);
+    camera(pos.x, pos.y, pos.z, pos.x + view.x, pos.y + view.y, pos.z + view.z, 0, 1, 0);
   }
 
   //On screen info
@@ -91,7 +58,7 @@ class Player
 
     //Ammo Info
     textSize(50);
-    text(ammo + "/" + magSize, width/2, height * .85);
+    text(gun.ammo + "/" + gun.magSize, width/2, height * .85);
 
     //Cross hair
     noStroke();
@@ -114,13 +81,13 @@ class Player
     rect(width/2, height * .95, 200, 30);
 
     //Reloading
-    if (reloading)
+    if (gun.reloading)
     {
       noStroke();
       fill(0,255,0);
       circle(width/2, height * .85, width/12.5);
       fill(255, 0, 0);
-      arc(width/2, height * .85, width/12.5, width/12.5, -HALF_PI, map(cooldown, 0, 60, -HALF_PI, PI+HALF_PI), PIE);
+      arc(width/2, height * .85, width/12.5, width/12.5, -HALF_PI, map(gun.cooldown, 0, 60, -HALF_PI, PI+HALF_PI), PIE);
     }
     
     //Leaderboard
@@ -195,12 +162,7 @@ class Player
       //Actions
       if (keyDown('R'))
       {
-        if(ammo < magSize && !reloading)
-        {
-          shooting = false;
-          ammo = magSize;
-          reloading = true;
-        }
+        gun.reload();
       }
       if (keyDown(' '))
       {
@@ -216,68 +178,6 @@ class Player
     //no movement
     else
       moving = false;
-  }
-
-  //Manages shooting
-  void weapon()
-  {
-    //Reload cooldown
-    if (reloading)
-    {
-      cooldown++;
-
-      if (cooldown > 60)
-      {
-        reloading = false;
-        cooldown = 0;
-      }
-    }
-
-    //Fire logic
-    if (mousePressed)
-    {
-      //Fire
-      if (!reloading && frameCount % 6 == 0 && ammo > 0 && mouseButton == LEFT)
-      {
-        shooting = true;
-        player.pitch -= .01;
-        player.yaw += random(-.001,.001);
-        ammo--;
-
-        for (int k : enemys.keySet())
-        {
-          Enemy enemy = enemys.get(k);
-
-          if (!enemy.dead && calculateCollision(new PVector(pos.x, pos.y, pos.z), view, new PVector(enemy.pos.x, enemy.pos.y, enemy.pos.z), 25))
-            client.write("HIT|" + enemy.ID + "\n");
-        }
-      }
-
-      //Zoom in
-      if (mouseButton == RIGHT)
-      {
-        if (zoom < 5)
-        {
-          zoom += .25;
-        }
-      }
-    } else if (zoom > 2.5)
-    {
-      zoom -= .25;
-    }
-    
-    else
-      shooting = false;
-  }
-
-  //Calculates the Ray sphere collision
-  boolean calculateCollision(PVector rayOrigin, PVector rayDirection, PVector sphereCenter, float sphereRadius)
-  {
-    PVector sphereToRay = PVector.sub(sphereCenter, rayOrigin);
-    float projection = PVector.dot(sphereToRay, rayDirection) / PVector.dot(rayDirection, rayDirection);
-    PVector closestPointOnRay = PVector.add(rayOrigin, PVector.mult(rayDirection, projection));
-    float distance = PVector.dist(closestPointOnRay, sphereCenter);
-    return distance < sphereRadius;
   }
 
   //Keeps player in map

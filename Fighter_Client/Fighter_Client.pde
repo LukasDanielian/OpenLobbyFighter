@@ -34,7 +34,7 @@ void draw()
   {
     background(0);
     textSize(100);
-    text("Connecting to TIC Server...", width/2, height/2);
+    text("Connecting to Server...", width/2, height/2);
     
     fill(255);
     for(float i = 0; i < TWO_PI; i+= QUARTER_PI)

@@ -4,7 +4,7 @@ class Player implements Runnable, Comparable<Player>
   PVector pos;
   float yaw, health;
   int ID, cooldown, kills;
-  boolean dead;
+  boolean dead, active;
 
   Player(Client client, int ID)
   {
@@ -14,12 +14,13 @@ class Player implements Runnable, Comparable<Player>
     this.ID = ID;
     cooldown = 3 * 60;
     health = 100;
+    active = true;
   }
 
   //Runs forever on a new thread constantly talking with individual client about actions
   void run()
   {
-    while (true)
+    while (active)
     {
       //Grab line from client
       if (client.available() > 0)
@@ -45,7 +46,7 @@ class Player implements Runnable, Comparable<Player>
           {
             synchronized(players)
             {
-              if(players.get(int(data[1])).applyDamage())
+              if (players.get(int(data[1])).applyDamage())
                 kills++;
             }
           }
@@ -65,7 +66,7 @@ class Player implements Runnable, Comparable<Player>
       dead = true;
       return true;
     }
-    
+
     return false;
   }
 
@@ -88,7 +89,7 @@ class Player implements Runnable, Comparable<Player>
 
     return ID + "*" + pos.x + "*" + pos.y + "*" + pos.z + "*" + yaw + "*" + health + "*" + dead;
   }
-  
+
   //Compares players by kill amount
   int compareTo(Player player)
   {
