@@ -58,7 +58,7 @@ class Player implements Runnable, Comparable<Player>
   //returns true if killed false otherwise
   boolean applyDamage()
   {
-    health -= 5;
+    health -= 10;
 
     //dead
     if (health <= 0)
