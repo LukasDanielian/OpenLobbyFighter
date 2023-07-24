@@ -15,7 +15,7 @@ void setup()
   textSize(25);
   textAlign(CENTER, CENTER);
 
-  server = new Server(this, 1234);
+  server = new Server(this, 1111);
   players = new HashMap<Integer, Player>();
   clients = new HashMap<Client, Integer>();
   

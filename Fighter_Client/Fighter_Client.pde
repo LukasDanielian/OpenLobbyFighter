@@ -83,7 +83,7 @@ void loadEverything()
   player = new Player();
   map = new Map();
   enemys = new HashMap<Integer, Enemy>();
-  client = new Client(this, "192.168.1.182", 1234);
+  client = new Client(this, "", 1111);
   getID();
   leaders = "";
   state = "Playing";
