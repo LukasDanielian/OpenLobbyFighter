@@ -1,6 +1,6 @@
 class Player
 {
-  int ID;
+  int ID,hitTimer;
   float yaw, pitch, speed, health;
   PVector pos, lastPos, view, vel;
   boolean jumping, moving;
@@ -9,12 +9,12 @@ class Player
   public Player()
   {
     PVector[] spawnLocs = {new PVector(-4500, 0, 0), new PVector(4500, 0, 0), new PVector(0, 0, -4500), new PVector(0, 0, 4500), new PVector(-4500, 0, -4500), new PVector(4500, 0, 4500), new PVector(4500, 0, -4500), new PVector(-4500, 0, 4500)};
-    pos = spawnLocs[(int)random(0,spawnLocs.length)];
-    yaw = atan2(-pos.x,pos.z) + HALF_PI;
+    pos = spawnLocs[(int)random(0, spawnLocs.length)];
+    yaw = atan2(-pos.x, pos.z) + HALF_PI;
     vel = new PVector(0, 0, 0);
     speed = .075;
     ID = -1;
-    health = 100;   
+    health = 100;
     gun = new Gun();
   }
 
@@ -29,7 +29,7 @@ class Player
     updateCamera();
     gun.render();
   }
-  
+
   //updates player view
   void updateCamera()
   {
@@ -69,6 +69,23 @@ class Player
     noFill();
     circle(width/2, height/2, 30);
 
+    //Hit marker
+    if (hitTimer > 0)
+    {
+      stroke(255, 0, 0);
+      push();
+      translate(width/2, height/2);
+      rotate(QUARTER_PI);
+      for (int i = 0; i < 4; i++)
+      {
+        rotate(HALF_PI);
+        rect(0, -30, 1, 15);
+      }
+      pop();
+      
+      hitTimer--;
+    }
+
     //Heath Bar
     fill(map(health, 100, 0, 175, 255), map(health, 100, 50, 255, 0), 0);
     noStroke();
@@ -84,14 +101,14 @@ class Player
     if (gun.reloading)
     {
       noStroke();
-      fill(0,255,0);
+      fill(0, 255, 0);
       circle(width/2, height * .85, width/12.5);
       fill(255, 0, 0);
       arc(width/2, height * .85, width/12.5, width/12.5, -HALF_PI, map(gun.cooldown, 0, 60, -HALF_PI, PI+HALF_PI), PIE);
     }
-    
+
     //Leaderboard
-    textAlign(CENTER,TOP);
+    textAlign(CENTER, TOP);
     fill(255);
     textSize(25);
     text(leaders, width * .9, height * .01);
@@ -173,8 +190,8 @@ class Player
           moving = true;
         }
       }
-    } 
-    
+    }
+
     //no movement
     else
       moving = false;
