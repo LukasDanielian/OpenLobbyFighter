@@ -72,9 +72,9 @@ class Gun
       //Fire
       if (!reloading && frameCount % 6 == 0 && ammo > 0 && mouseButton == LEFT)
       {
-        shooting = true;
         player.pitch -= .01;
         player.yaw += random(-.001, .001);
+        shooting = true;
         ammo--;
 
         synchronized(enemys)

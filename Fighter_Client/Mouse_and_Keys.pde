@@ -34,6 +34,15 @@ void keyPressed()
     else
       lockMouse();
   }
+  
+  if(state.equals("Typing"))
+  {
+    if(key == BACKSPACE && ip.length() > 0)
+      ip = ip.substring(0,ip.length()-1);
+    
+    else if((key >= 48 && key <= 57) || key == 46)
+      ip += key;
+  }
 }
 
 //Key up

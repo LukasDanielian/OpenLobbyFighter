@@ -2,15 +2,15 @@ import processing.net.*;
 import com.jogamp.newt.opengl.GLWindow;
 
 GLWindow r;
-boolean[] keys;
+boolean[] keys = new boolean[256];
 boolean mouseLock;
 PVector oldMouse;
 int offsetX, offsetY;
 Player player;
 Map map;
 Client client;
-HashMap<Integer,Enemy> enemys;
-String state,leaders;
+HashMap<Integer, Enemy> enemys;
+String state, leaders, ip;
 
 void setup()
 {
@@ -21,25 +21,44 @@ void setup()
   imageMode(CENTER);
   hint(ENABLE_STROKE_PERSPECTIVE);
   frameRate(60);
-  textSize(128);  
-  
-  state = "Loading";
-  thread("loadEverything");
+  textSize(128);
+
+  state = "Typing";
+  ip = "";
 }
 
 void draw()
 {
+  //User enters IP
+  if (state.equals("Typing"))
+  {
+    background(0);
+    textSize(50);
+    fill(255);
+    textAlign(LEFT, CENTER);
+    text("Enter IP: " + ip, width/3, height/2);
+    textAlign(CENTER,CENTER);
+
+    if (keyPressed && key == ENTER)
+    {
+      state = "Loading";
+      thread("loadEverything");
+    }
+    
+    return;
+  }
+
   //Loading
-  if (state.equals("Loading"))
+  else if (state.equals("Loading"))
   {
     background(0);
     textSize(100);
     text("Connecting to Server...", width/2, height/2);
-    
+
     fill(255);
-    for(float i = 0; i < TWO_PI; i+= QUARTER_PI)
+    for (float i = 0; i < TWO_PI; i+= QUARTER_PI)
       circle(width/2 + sin(i - frameCount * .1) * 50, height * .75 + cos(i - frameCount * .05) * 50, 10);
-      
+
     return;
   }
 
@@ -57,7 +76,7 @@ void draw()
 
   //Respawn
   else if (state.equals("Respawning"))
-  {    
+  {
     push();
     camera();
     ortho();
@@ -70,20 +89,19 @@ void draw()
     hint(ENABLE_DEPTH_TEST);
     pop();
   }
-  
+
   client.write("POSITION|" + player.pos.x + "|" + player.pos.y + "|" + player.pos.z + "|" + player.yaw + "\n");
 }
 
 void loadEverything()
 {
   r=(GLWindow)surface.getNative();
-  keys = new boolean[256];
   oldMouse = new PVector(mouseX, mouseY);
   lockMouse();
   player = new Player();
   map = new Map();
   enemys = new HashMap<Integer, Enemy>();
-  client = new Client(this, "", 1111);
+  client = new Client(this, ip, 1111);
   getID();
   leaders = "";
   state = "Playing";
