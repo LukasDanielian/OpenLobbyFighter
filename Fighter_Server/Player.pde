@@ -48,7 +48,7 @@ class Player implements Runnable, Comparable<Player>
             {
               Player player = players.get(int(data[1]));
               
-              if (player.applyDamage(int(data[2]),ID))
+              if (player != null && player.applyDamage(int(data[2]),ID))
               {
                 kills++;
                 client.write("KILL|\n");
