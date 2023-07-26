@@ -9,7 +9,7 @@ PVector[] spawnLocs = {new PVector(-4500, 0, 0), new PVector(4500, 0, 0), new PV
 
 void setup()
 {
-  size(150, 150);
+  size(200, 150);
   frameRate(60);
   background(0);
   textSize(25);
