@@ -149,7 +149,7 @@ class Player
       fill(0, 255, 0);
       circle(width/2, height * .85, width/12.5);
       fill(255, 0, 0);
-      arc(width/2, height * .85, width/12.5, width/12.5, -HALF_PI, map(gun.cooldown, 0, 60, -HALF_PI, PI+HALF_PI), PIE);
+      arc(width/2, height * .85, width/12.5, width/12.5, -HALF_PI, map(gun.reloadTime, 0, 60, -HALF_PI, PI+HALF_PI), PIE);
     }
 
     //Leaderboard

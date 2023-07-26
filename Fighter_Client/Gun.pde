@@ -1,8 +1,8 @@
 class Gun
 {
   PShape gun;
-  boolean reloading;
-  int ammo, magSize, cooldown;
+  boolean reloading, loadingBullet;
+  int ammo, magSize, reloadTime, bulletTime;
   float zoom;
 
   Gun()
@@ -53,12 +53,24 @@ class Gun
     //Reload cooldown
     if (reloading)
     {
-      cooldown++;
+      reloadTime++;
 
-      if (cooldown > 60)
+      if (reloadTime > 60)
       {
         reloading = false;
-        cooldown = 0;
+        reloadTime = 0;
+      }
+    }
+    
+    //Fire rate 
+    if(loadingBullet)
+    {
+      bulletTime++;
+      
+      if(bulletTime > 5)
+      {
+        loadingBullet = false;
+        bulletTime = 0;
       }
     }
 
@@ -66,11 +78,12 @@ class Gun
     else if (mouse[0] || mouse[1])
     {
       //Fire
-      if (mouse[0] && !reloading && frameCount % 6 == 0 && ammo > 0 && (zoom == 5 || zoom == 2.5))
+      if (mouse[0] && !loadingBullet && !reloading && ammo > 0 && (zoom == 5 || zoom == 2.5))
       {
         player.pitch -= .01;
         player.yaw += random(-.001, .001);
         ammo--;
+        loadingBullet = true;
 
         synchronized(enemys)
         {
@@ -127,6 +140,6 @@ class Gun
     float projection = PVector.dot(sphereToRay, rayDirection) / PVector.dot(rayDirection, rayDirection);
     PVector closestPointOnRay = PVector.add(rayOrigin, PVector.mult(rayDirection, projection));
     float distance = PVector.dist(closestPointOnRay, sphereCenter);
-    return distance < sphereRadius;
+    return distance <= sphereRadius;
   }
 }
