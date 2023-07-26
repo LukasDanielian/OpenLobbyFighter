@@ -93,6 +93,8 @@ void manageData()
           player.pos.x = float(data[1]);
           player.pos.z = float(data[2]);
           player.yaw = atan2(-player.pos.x,player.pos.z) + HALF_PI;
+          player.gun.ammo = player.gun.magSize;
+          player.gun.reloading = false;
         }
 
         //Player leaves game
@@ -101,6 +103,28 @@ void manageData()
           synchronized(enemys)
           {
             enemys.remove(int(data[1]));
+          }
+        }
+        
+        //Player gets a kill
+        else if(data[0].equals("KILL"))
+        {
+          player.killTimer = 60;
+        }
+        
+        //Player gets hit by enemy
+        else if(data[0].equals("HIT"))
+        {
+          Enemy enemy = enemys.get(int(data[1]));
+          
+          if(enemy != null)
+          {
+            player.damageTimer = 120;
+            
+            synchronized(enemys)
+            {
+              player.hitBy.add(enemy);
+            }
           }
         }
       }

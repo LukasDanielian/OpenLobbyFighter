@@ -3,6 +3,7 @@ import com.jogamp.newt.opengl.GLWindow;
 
 GLWindow r;
 boolean[] keys = new boolean[256];
+boolean[] mouse = new boolean[2];
 boolean mouseLock;
 PVector oldMouse;
 int offsetX, offsetY;
@@ -24,7 +25,7 @@ void setup()
   textSize(128);
 
   state = "Typing";
-  ip = "";
+  ip = "192.168.1.183";
 }
 
 void draw()

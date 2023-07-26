@@ -1,7 +1,7 @@
 class Gun
 {
   PShape gun;
-  boolean shooting, reloading;
+  boolean reloading;
   int ammo, magSize, cooldown;
   float zoom;
 
@@ -30,19 +30,15 @@ class Gun
     gunPos.y = map(zoom, 2.5, 5, 5, 3.5);
     gunPos.z = map(zoom, 2.5, 5, -5, 5);
 
-    //Moving and shooting animation
-    if (mouseButton != RIGHT)
-    {
-      //Shooting animation
-      if (shooting && ammo != 0)
-        gunPos.z += sin(frameCount)/2;
+    //Shooting animation
+    if (mouse[0] && ammo != 0)
+      gunPos.z += sin(frameCount)/2;
 
-      //Moving animation
-      else if (player.moving)
-      {
-        gunPos.x += sin(frameCount * .1)/2;
-        gunPos.y -= abs(sin(frameCount * .1))/2;
-      }
+    //Moving animation
+    if (!mouse[1] && player.moving)
+    {
+      gunPos.x += sin(frameCount * .1)/2;
+      gunPos.y -= abs(sin(frameCount * .1))/2;
     }
 
     //Render gun
@@ -67,14 +63,13 @@ class Gun
     }
 
     //Fire logic
-    if (mousePressed)
+    else if (mouse[0] || mouse[1])
     {
       //Fire
-      if (!reloading && frameCount % 6 == 0 && ammo > 0 && mouseButton == LEFT)
+      if (mouse[0] && !reloading && frameCount % 6 == 0 && ammo > 0 && (zoom == 5 || zoom == 2.5))
       {
         player.pitch -= .01;
         player.yaw += random(-.001, .001);
-        shooting = true;
         ammo--;
 
         synchronized(enemys)
@@ -84,10 +79,16 @@ class Gun
           {
             Enemy enemy = enemys.get(k);
 
-            //Head and body shot
-            if (!enemy.dead && (calculateCollision(new PVector(player.pos.x, player.pos.y, player.pos.z), player.view, new PVector(enemy.pos.x, enemy.pos.y, enemy.pos.z), 25) || calculateCollision(new PVector(player.pos.x, player.pos.y, player.pos.z), player.view, new PVector(enemy.pos.x, enemy.pos.y + 50, enemy.pos.z), 25)))
+            if (!enemy.dead)
             {
-              client.write("HIT|" + enemy.ID + "\n");
+              //head then body checks
+              if(calculateCollision(new PVector(player.pos.x, player.pos.y, player.pos.z), player.view, new PVector(enemy.pos.x, enemy.pos.y, enemy.pos.z), 25))
+                client.write("HIT|" + enemy.ID + "|" + 15 +"\n");
+              else if(calculateCollision(new PVector(player.pos.x, player.pos.y, player.pos.z), player.view, new PVector(enemy.pos.x, enemy.pos.y + 50, enemy.pos.z), 25))
+                client.write("HIT|" + enemy.ID + "|" + 10 +"\n");
+              else
+                return;
+  
               player.hitTimer = 5;
             }
           }
@@ -95,28 +96,25 @@ class Gun
       }
 
       //Zoom in
-      if (mouseButton == RIGHT)
+      if (mouse[1])
       {
         //Scope in
         if (zoom < 5)
-          zoom += .25;
+          zoom += .5;
       }
     }
 
     //Unscope
-    else if (zoom > 2.5)
-      zoom -= .25;
-
-    //Not firing
-    else
-      shooting = false;
+    else if (zoom > 2.5 && !mouse[1])
+      zoom -= .5;
   }
 
+  //Resets total bullets and starts cooldown
   void reload()
   {
     if (ammo < magSize && !reloading)
     {
-      shooting = false;
+      zoom = 2.5;
       ammo = magSize;
       reloading = true;
     }

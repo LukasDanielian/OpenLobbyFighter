@@ -46,8 +46,13 @@ class Player implements Runnable, Comparable<Player>
           {
             synchronized(players)
             {
-              if (players.get(int(data[1])).applyDamage())
+              Player player = players.get(int(data[1]));
+              
+              if (player.applyDamage(int(data[2]),ID))
+              {
                 kills++;
+                client.write("KILL|\n");
+              }
             }
           }
         }
@@ -56,9 +61,10 @@ class Player implements Runnable, Comparable<Player>
   }
 
   //returns true if killed false otherwise
-  boolean applyDamage()
+  boolean applyDamage(int damage, int id)
   {
-    health -= 10;
+    health -= damage;
+    client.write("HIT|" + id + "\n");
 
     //dead
     if (health <= 0)

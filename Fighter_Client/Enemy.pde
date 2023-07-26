@@ -36,9 +36,9 @@ class Enemy
       rotateY(-yaw + HALF_PI);
       stroke(0);
       strokeWeight(1);
-      fill(255, 0, 0);
       shape(eye);
       translate(0, 50, 0);
+      fill(map(health, 100, 0, 175, 255), map(health, 100, 50, 255, 0), 0);
       box(30, 50, 30);
 
       //Gun model

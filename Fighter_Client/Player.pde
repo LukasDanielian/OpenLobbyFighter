@@ -1,6 +1,7 @@
 class Player
 {
-  int ID,hitTimer;
+  ArrayList<Enemy> hitBy;
+  int ID, hitTimer, killTimer, damageTimer;
   float yaw, pitch, speed, health;
   PVector pos, lastPos, view, vel;
   boolean jumping, moving;
@@ -10,6 +11,7 @@ class Player
   {
     PVector[] spawnLocs = {new PVector(-4500, 0, 0), new PVector(4500, 0, 0), new PVector(0, 0, -4500), new PVector(0, 0, 4500), new PVector(-4500, 0, -4500), new PVector(4500, 0, 4500), new PVector(4500, 0, -4500), new PVector(-4500, 0, 4500)};
     pos = spawnLocs[(int)random(0, spawnLocs.length)];
+    hitBy = new ArrayList<Enemy>();
     yaw = atan2(-pos.x, pos.z) + HALF_PI;
     vel = new PVector(0, 0, 0);
     speed = .075;
@@ -82,8 +84,51 @@ class Player
         rect(0, -30, 1, 15);
       }
       pop();
-      
+
       hitTimer--;
+    }
+
+    //Kill indication
+    if (killTimer > 0)
+    {
+      textSize(map(killTimer, 60, 0, 40, 15));
+      fill(255, map(killTimer, 60, 0, 255, 0));
+      text("+1 KILL", width/2 + 100, height/2 - map(killTimer, 60, 0, 0, 100));
+      killTimer--;
+    }
+
+    //Point toward enemy hitting you
+    if (damageTimer > 0)
+    {
+      synchronized(enemys)
+      {
+        for (int i = 0; i < hitBy.size(); i++)
+        {
+          Enemy enemy = hitBy.get(i);
+
+          //Remove
+          if (enemy.dead)
+          {
+            hitBy.remove(i);
+            i--;
+          }
+
+          //Arrow
+          else
+          {
+            push();
+            translate(width/2, height * .85);
+            fill(255, 0, 0);
+            noStroke();
+            rotate(-atan2(enemy.pos.x - pos.x, enemy.pos.z - pos.z) - (yaw + PI));
+            translate(150, 0, 0);
+            triangle(10, 0, -10, 50, -10, -50);
+            pop();
+          }
+        }
+      }
+      
+      damageTimer--;
     }
 
     //Heath Bar
@@ -112,6 +157,13 @@ class Player
     fill(255);
     textSize(25);
     text(leaders, width * .9, height * .01);
+
+    //Damaged
+    if (health <= 75)
+    {
+      fill(255, 0, 0, map(health, 75, 0, 0, 125));
+      rect(width/2, height/2, width, height);
+    }
 
     hint(ENABLE_DEPTH_TEST);
     pop();

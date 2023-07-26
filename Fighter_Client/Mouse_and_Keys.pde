@@ -35,6 +35,7 @@ void keyPressed()
       lockMouse();
   }
   
+  //Enter IP
   if(state.equals("Typing"))
   {
     if(key == BACKSPACE && ip.length() > 0)
@@ -56,4 +57,31 @@ void keyReleased()
 boolean keyDown(int key) 
 {
   return keys[key];
+}
+
+//Checks if mouse buttons are pressed
+void mousePressed()
+{
+  if(mouseButton == LEFT)
+    mouse[0] = true;
+  if(mouseButton == RIGHT)
+    mouse[1] = true;
+}
+
+//checks if mouse buttons are released
+void mouseReleased()
+{
+  if(mouse[0] && mouse[1])
+  {
+    if(mouseButton == RIGHT)
+      mouse[1] = false;
+    if(mouseButton == LEFT)
+      mouse[0] = false;
+  }
+  
+  else
+  {
+    mouse[0] = false;
+    mouse[1] = false;
+  }
 }
