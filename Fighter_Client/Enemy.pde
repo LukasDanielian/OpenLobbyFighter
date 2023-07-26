@@ -35,7 +35,7 @@ class Enemy
       translate(pos.x, pos.y, pos.z);
       rotateY(-yaw + HALF_PI);
       stroke(0);
-      strokeWeight(1);
+      strokeWeight(5);
       shape(eye);
       translate(0, 50, 0);
       fill(map(health, 100, 0, 175, 255), map(health, 100, 50, 255, 0), 0);
