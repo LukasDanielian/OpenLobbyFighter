@@ -25,7 +25,7 @@ void setup()
   textSize(128);
 
   state = "Typing";
-  ip = "192.168.1.183";
+  ip = "";
 }
 
 void draw()

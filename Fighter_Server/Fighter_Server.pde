@@ -37,8 +37,6 @@ void draw()
   {
     server.write("PLAYERS|" + toSend.substring(0, toSend.length()-1) + "\n");
   }
-  
-  sendLeaderBoard();
 }
 
 //New client joins server
@@ -51,6 +49,8 @@ void serverEvent(Server someServer, Client someClient)
   clients.put(someClient, id);
   someClient.write("ID|" + id + "\n");
   id++;
+  
+  sendLeaderBoard();
 }
 
 //Client leaves server
@@ -61,4 +61,6 @@ void disconnectEvent(Client someClient)
   players.get(id).active = false;
   players.remove(id);
   clients.remove(someClient);
+  
+  sendLeaderBoard();
 }

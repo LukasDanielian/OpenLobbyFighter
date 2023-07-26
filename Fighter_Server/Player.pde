@@ -52,6 +52,7 @@ class Player implements Runnable, Comparable<Player>
               {
                 kills++;
                 client.write("KILL|\n");
+                sendLeaderBoard();
               }
             }
           }
