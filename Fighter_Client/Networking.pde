@@ -95,6 +95,10 @@ void manageData()
           player.yaw = atan2(-player.pos.x,player.pos.z) + HALF_PI;
           player.gun.ammo = player.gun.magSize;
           player.gun.reloading = false;
+          player.hitTimer =  0;
+          player.killTimer = 0;
+          player.damageTimer = 0;
+          player.hitBy = new ArrayList<Enemy>();
         }
 
         //Player leaves game
