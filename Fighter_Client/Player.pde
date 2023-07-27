@@ -130,6 +130,11 @@ class Player
       
       damageTimer--;
     }
+    
+    //Remove enemys that hit you after timer
+    else
+      hitBy = new ArrayList<Enemy>();
+    
 
     //Heath Bar
     fill(map(health, 100, 0, 175, 255), map(health, 100, 50, 255, 0), 0);
