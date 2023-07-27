@@ -36,14 +36,14 @@ void manageData()
         //Other player data
         if (data[0].equals("PLAYERS"))
         {
-          for (int i = 1; i < data.length; i++)
+          synchronized(enemys)
           {
-            String[] pos = split(data[i], "*");
-
-            //Other player info
-            if (int(pos[0]) != player.ID)
+            for (int i = 1; i < data.length; i++)
             {
-              synchronized(enemys)
+              String[] pos = split(data[i], "*");
+
+              //Other player info
+              if (int(pos[0]) != player.ID)
               {
                 Enemy enemy = enemys.get(int(pos[0]));
 
@@ -62,31 +62,47 @@ void manageData()
                   enemy.health = float(pos[5]);
                   enemy.dead = boolean(pos[6]);
                 }
+                
+                enemy.didGet = true;
+              }
+
+              //Current player
+              else
+              {
+                player.health = float(pos[5]);
+
+                //Respawn got sent but packet got lost
+                if (state.equals("Respawning") && !boolean(pos[6]))
+                {
+                  state = "Playing";
+                  player.pos = new PVector(float(pos[1]), float(pos[2]), float(pos[3]));
+                  player.yaw = atan2(-player.pos.x, player.pos.z) + HALF_PI;
+                  player.gun.ammo = player.gun.magSize;
+                  player.gun.reloading = false;
+                  player.hitTimer =  0;
+                  player.killTimer = 0;
+                  player.damageTimer = 0;
+                  player.hitBy = new ArrayList<Enemy>();
+                }
+
+                //Died
+                if (boolean(pos[6]))
+                  state = "Respawning";
               }
             }
-
-            //Current player
-            else
+            
+            //remove players that left
+            for(int k: enemys.keySet())
             {
-              player.health = float(pos[5]);
-
-              //Respawn got sent but packet got lost
-              if (state.equals("Respawning") && !boolean(pos[6]))
+              Enemy enemy = enemys.get(k);
+              
+              if(!enemy.didGet)
               {
-                state = "Playing";
-                player.pos = new PVector(float(pos[1]), float(pos[2]), float(pos[3]));
-                player.yaw = atan2(-player.pos.x, player.pos.z) + HALF_PI;
-                player.gun.ammo = player.gun.magSize;
-                player.gun.reloading = false;
-                player.hitTimer =  0;
-                player.killTimer = 0;
-                player.damageTimer = 0;
-                player.hitBy = new ArrayList<Enemy>();
+                enemys.remove(k);
+                break;
               }
-
-              //Died
-              if (boolean(pos[6]))
-                state = "Respawning";
+              
+              enemy.didGet = false;
             }
           }
         }
@@ -98,15 +114,6 @@ void manageData()
 
           for (int i = 1; i < data.length; i++)
             leaders += data[i] + "\n";
-        }
-
-        //Player leaves game
-        else if (data[0].equals("LEFT"))
-        {
-          synchronized(enemys)
-          {
-            enemys.remove(int(data[1]));
-          }
         }
 
         //Player gets a kill

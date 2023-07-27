@@ -3,7 +3,7 @@ class Enemy
   int ID;
   PVector pos;
   float yaw, health;
-  boolean dead;
+  boolean dead, didGet;
   PShape gun, eye;
 
   Enemy(int ID, PVector pos, float yaw, float health, boolean dead)
