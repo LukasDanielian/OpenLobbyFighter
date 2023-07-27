@@ -101,9 +101,11 @@ void manageData()
                 enemys.remove(k);
                 break;
               }
-              
-              enemy.didGet = false;
             }
+            
+            //reset states
+            for(int k: enemys.keySet())
+              enemys.get(k).didGet = false;
           }
         }
 
