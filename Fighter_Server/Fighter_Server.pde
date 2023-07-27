@@ -57,7 +57,6 @@ void serverEvent(Server someServer, Client someClient)
 void disconnectEvent(Client someClient)
 {
   int id = clients.get(someClient);
-  server.write("LEFT|" + id + "\n");
   players.get(id).active = false;
   players.remove(id);
   clients.remove(someClient);
