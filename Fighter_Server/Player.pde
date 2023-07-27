@@ -3,7 +3,7 @@ class Player implements Runnable, Comparable<Player>
   Client client;
   PVector pos;
   float yaw, health;
-  int ID, cooldown, kills;
+  int ID, cooldown, reviveTimer, kills;
   boolean dead, active;
 
   Player(Client client, int ID)
@@ -47,8 +47,8 @@ class Player implements Runnable, Comparable<Player>
             synchronized(players)
             {
               Player player = players.get(int(data[1]));
-              
-              if (player != null && player.applyDamage(int(data[2]),ID))
+
+              if (player != null && player.applyDamage(int(data[2]), ID))
               {
                 kills++;
                 client.write("KILL|\n");
@@ -65,6 +65,7 @@ class Player implements Runnable, Comparable<Player>
   boolean applyDamage(int damage, int id)
   {
     health -= damage;
+    reviveTimer = 60 * 5;
     client.write("HIT|" + id + "\n");
 
     //dead
@@ -89,9 +90,22 @@ class Player implements Runnable, Comparable<Player>
         dead = false;
         cooldown = 3 * 60;
         health = 100;
-        PVector bestSpawn = getBestSpawn();
-        client.write("RESPAWN|" + bestSpawn.x + "|" + bestSpawn.z + "\n");
+        pos = getBestSpawn();
       }
+    } 
+    
+    //Revive health after 5 seconds
+    else
+    {
+      if(reviveTimer <= 0)
+      {
+        health += 5;
+        
+        if(health > 100)
+          health = 100;
+      }
+      
+      reviveTimer--;
     }
 
     return ID + "*" + pos.x + "*" + pos.y + "*" + pos.z + "*" + yaw + "*" + health + "*" + dead;

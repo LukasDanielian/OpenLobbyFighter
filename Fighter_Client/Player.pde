@@ -1,7 +1,7 @@
 class Player
 {
   ArrayList<Enemy> hitBy;
-  int ID, hitTimer, killTimer, damageTimer;
+  int ID, hitTimer, killTimer, damageTimer, reviveTimer;
   float yaw, pitch, speed, health;
   PVector pos, lastPos, view, vel;
   boolean jumping, moving;
