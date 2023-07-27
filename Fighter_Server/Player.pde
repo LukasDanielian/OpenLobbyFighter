@@ -90,7 +90,7 @@ class Player implements Runnable, Comparable<Player>
         dead = false;
         cooldown = 3 * 60;
         health = 100;
-        pos = getBestSpawn();
+        pos = getBestSpawn().copy();
       }
     } 
     
