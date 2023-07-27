@@ -18,7 +18,7 @@ class Star implements Object
     push();
     translate(pos.x, pos.y, pos.z);
     stroke(255);
-    strokeWeight(15);
+    strokeWeight(25);
     noFill();
     point(0, 0);
     pop();
