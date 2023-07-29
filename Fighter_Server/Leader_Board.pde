@@ -7,7 +7,7 @@ void sendLeaderBoard()
   for(int k: players.keySet())
     leaders.add(players.get(k));
   
-  String toRet = "Player Num:    Kills:|";;
+  String toRet = "Player Num:    Kills:|";
   
   //Sort through all players
   while(!leaders.isEmpty())

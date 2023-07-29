@@ -4,7 +4,7 @@ class Player implements Runnable, Comparable<Player>
   PVector pos;
   float yaw, health;
   int ID, cooldown, reviveTimer, kills;
-  boolean dead, active;
+  boolean dead, active, reviving;
 
   Player(Client client, int ID)
   {
@@ -90,22 +90,31 @@ class Player implements Runnable, Comparable<Player>
         dead = false;
         cooldown = 3 * 60;
         health = 100;
-        pos = getBestSpawn().copy();
+        
+        PVector spawn = getBestSpawn();
+        pos = new PVector(spawn.x,spawn.y,spawn.z);
       }
     } 
     
-    //Revive health after 5 seconds
-    else
+    //Revive cooldown
+    else if(reviveTimer > 0)
     {
-      if(reviveTimer <= 0)
-      {
-        health += 5;
-        
-        if(health > 100)
-          health = 100;
-      }
-      
       reviveTimer--;
+      
+      if(reviveTimer <= 0)
+        reviving = true;
+    }
+    
+    //restoring health
+    if(reviving)
+    {
+      health += 3;
+      
+      if(health > 100)
+      {
+        health = 100;
+        reviving = false;
+      }
     }
 
     return ID + "*" + pos.x + "*" + pos.y + "*" + pos.z + "*" + yaw + "*" + health + "*" + dead;
