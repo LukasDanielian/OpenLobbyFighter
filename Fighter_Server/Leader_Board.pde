@@ -5,9 +5,7 @@ void sendLeaderBoard()
   PriorityQueue<Player> leaders = new PriorityQueue<>();
   
   for(int k: players.keySet())
-  {
     leaders.add(players.get(k));
-  }
   
   String toRet = "Player Num:    Kills:|";;
   

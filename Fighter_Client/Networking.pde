@@ -71,7 +71,7 @@ void manageData()
               {
                 player.health = float(pos[5]);
 
-                //Respawn got sent but packet got lost
+                //Respawn
                 if (state.equals("Respawning") && !boolean(pos[6]))
                 {
                   state = "Playing";

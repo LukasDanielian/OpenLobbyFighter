@@ -7,10 +7,7 @@ class Tree implements Object
   Tree(PVector pos)
   {
     this.pos = pos;
-    tree = loadShape("tree.obj");
-    tree.scale(150);
-    tree.rotateX(HALF_PI);
-    tree.translate(-850,900,-700);
+    tree = t;
     rot = random(0,TWO_PI);
   }
   

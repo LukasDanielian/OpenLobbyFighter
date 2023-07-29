@@ -15,7 +15,7 @@ void lockMouse()
 void unlockMouse() 
 {
   if (mouseLock) 
-    r.warpPointer((int) oldMouse.x, (int) oldMouse.y);
+    window.warpPointer((int) oldMouse.x, (int) oldMouse.y);
     
   mouseLock = false;
 }

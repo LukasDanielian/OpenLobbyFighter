@@ -6,9 +6,7 @@ class Rock implements Object
   Rock(PVector pos)
   {
     this.pos = pos;
-    rock = loadShape("rock.obj");
-    rock.scale(5);
-    rock.translate(150,300,0);
+    rock = r;
   }
   
   void render()

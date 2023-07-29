@@ -185,16 +185,16 @@ class Player
     {
       yaw += (mouseX-offsetX-width/2.0)*.001;
       pitch += (mouseY-offsetY-height/2.0)*.001;
-      r.setPointerVisible(false);
-      r.warpPointer(width/2, height/2);
-      r.confinePointer(true);
+      window.setPointerVisible(false);
+      window.warpPointer(width/2, height/2);
+      window.confinePointer(true);
     }
 
     //Not bound
     else
     {
-      r.confinePointer(false);
-      r.setPointerVisible(true);
+      window.confinePointer(false);
+      window.setPointerVisible(true);
     }
 
     offsetX=offsetY=0;

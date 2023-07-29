@@ -13,16 +13,8 @@ class Enemy
     this.yaw = yaw;
     this.health = health;
     this.dead = dead;
-    gun = loadShape("gun.obj");
-    gun.scale(4);
-    gun.rotateX(PI);
-    gun.translate(1, 12, 0);
-    
-    eye = createShape(SPHERE,25);
-    eye.setTexture(loadImage("eye.jpg"));
-    eye.rotateY(-HALF_PI);
-    eye.translate(25,25,0);
-    eye.setStroke(false);
+    gun = g2;
+    eye = e;
   }
 
   //Renders enemys

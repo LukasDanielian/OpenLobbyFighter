@@ -7,10 +7,7 @@ class Gun
 
   Gun()
   {
-    gun = loadShape("gun.obj");
-    gun.scale(2);
-    gun.rotateX(PI);
-    gun.translate(1, 12, 0);
+    gun = g;
     magSize = 30;
     ammo = magSize;
     zoom = 2.5;
@@ -31,7 +28,7 @@ class Gun
     gunPos.z = map(zoom, 2.5, 5, -5, 5);
 
     //Shooting animation
-    if (mouse[0] && ammo != 0)
+    if (mouse[0] && ammo != 0 && !reloading)
       gunPos.z += sin(frameCount)/2;
 
     //Moving animation

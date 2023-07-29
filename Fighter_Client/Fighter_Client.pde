@@ -1,7 +1,7 @@
 import processing.net.*;
 import com.jogamp.newt.opengl.GLWindow;
 
-GLWindow r;
+GLWindow window;
 boolean[] keys = new boolean[256];
 boolean[] mouse = new boolean[2];
 boolean mouseLock;
@@ -12,6 +12,7 @@ Map map;
 Client client;
 HashMap<Integer, Enemy> enemys;
 String state, leaders, ip;
+PShape r, g, g2, t, e;
 
 void setup()
 {
@@ -25,7 +26,7 @@ void setup()
   textSize(128);
 
   state = "Typing";
-  ip = "192.168.137.190";
+  ip = "192.168.1.183";
 }
 
 void draw()
@@ -38,14 +39,14 @@ void draw()
     fill(255);
     textAlign(LEFT, CENTER);
     text("Enter IP: " + ip, width/3, height/2);
-    textAlign(CENTER,CENTER);
+    textAlign(CENTER, CENTER);
 
     if (keyPressed && key == ENTER)
     {
       state = "Loading";
       thread("loadEverything");
     }
-    
+
     return;
   }
 
@@ -96,9 +97,34 @@ void draw()
 
 void loadEverything()
 {
-  r=(GLWindow)surface.getNative();
+  window=(GLWindow)surface.getNative();
   oldMouse = new PVector(mouseX, mouseY);
   lockMouse();
+  r = loadShape("rock.obj");
+  r.scale(5);
+  r.translate(150, 300, 0);
+
+  g = loadShape("gun.obj");
+  g.scale(2);
+  g.rotateX(PI);
+  g.translate(1, 12, 0);
+  
+  g2 = loadShape("gun.obj");
+  g2.scale(4);
+  g2.rotateX(PI);
+  g2.translate(1, 12, 0);
+
+  t = loadShape("tree.obj");
+  t.scale(150);
+  t.rotateX(HALF_PI);
+  t.translate(-850, 900, -700);
+
+  e = createShape(SPHERE, 25);
+  e.setTexture(loadImage("eye.jpg"));
+  e.rotateY(-HALF_PI);
+  e.translate(25, 25, 0);
+  e.setStroke(false);
+
   player = new Player();
   map = new Map();
   enemys = new HashMap<Integer, Enemy>();
