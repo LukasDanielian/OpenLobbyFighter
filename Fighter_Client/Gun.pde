@@ -28,7 +28,7 @@ class Gun
     gunPos.z = map(zoom, 2.5, 5, -5, 5);
 
     //Shooting animation
-    if (mouse[0] && ammo != 0 && !reloading)
+    if (mouse[0] && ammo != 0 && !reloading) 
       gunPos.z += sin(frameCount)/2;
 
     //Moving animation
