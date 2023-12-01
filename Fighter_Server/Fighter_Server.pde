@@ -40,29 +40,23 @@ void draw()
 }
 
 //New client joins server
-void serverEvent(Server someServer, Client someClient)
+protected void serverEvent(Server someServer, Client someClient)
 {
-  synchronized(players)
-  {
-    Player player = new Player(someClient, id);
-    new Thread(player).start();
-    players.put(id, player);
-    clients.put(someClient, id);
-    someClient.write("ID|" + id + "\n");
-    id++;
-    sendLeaderBoard();
-  }
+  Player player = new Player(someClient, id);
+  new Thread(player).start();
+  players.put(id, player);
+  clients.put(someClient, id);
+  someClient.write("ID|" + id + "\n");
+  id++;
+  sendLeaderBoard();
 }
 
 //Client leaves server
-void disconnectEvent(Client someClient)
+protected void disconnectEvent(Client someClient)
 {
-  synchronized(players)
-  {
-    int id = clients.get(someClient);
-    players.get(id).active = false;
-    players.remove(id);
-    clients.remove(someClient);
-    sendLeaderBoard();
-  }
+  int id = clients.get(someClient);
+  players.get(id).active = false;
+  players.remove(id);
+  clients.remove(someClient);
+  sendLeaderBoard();
 }
